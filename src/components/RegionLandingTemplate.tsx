@@ -399,6 +399,9 @@ export function RegionLandingTemplate({
 
       <nav className="region-landing-jump" aria-label="페이지 바로가기">
         <div className="region-page-shell">
+          <a href="#region-directory">
+            {items.length === 0 ? "포함 행정동" : "하위 지역"}
+          </a>
           <a href="#region-introduction">지역 소개</a>
           <a href="#region-payment-safety">안심 후불제</a>
           <a href="#region-pricing">코스·가격</a>
@@ -407,11 +410,16 @@ export function RegionLandingTemplate({
           <a href="#region-service-standards">운영 기준</a>
           <a href="#region-process">이용 절차</a>
           <a href="#region-faq">자주 묻는 내용</a>
-          <a href="#region-directory">
-            {items.length === 0 ? "포함 행정동" : "하위 지역"}
-          </a>
         </div>
       </nav>
+
+      <div className="region-page-shell region-landing-directory-top">
+        <RegionDirectory
+          copy={customerCopy.directory}
+          items={items}
+          node={node}
+        />
+      </div>
 
       <RegionEditorialIntroduction
         copy={editorialCopy.introduction}
@@ -461,11 +469,6 @@ export function RegionLandingTemplate({
         <div id="region-faq">
           <RegionFaq copy={customerCopy.faq} regionName={regionName} />
         </div>
-        <RegionDirectory
-          copy={customerCopy.directory}
-          items={items}
-          node={node}
-        />
       </div>
 
       <a

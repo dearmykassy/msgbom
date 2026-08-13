@@ -52,6 +52,92 @@ export const PARTIAL_250_REGION_HERO_CONTRACT = {
   },
 } as const;
 
+/**
+ * Temporary owner-approved rollout for the eight newly added service roots.
+ * The original 862 routes remain on the frozen base250 records; only the
+ * other 429 routes use the finalized completion095 images.  Extension-076 is
+ * intentionally absent and remains reserved for a later 2-3-use rollout.
+ */
+export const TEMPORARY_COMPLETION095_REGION_HERO_CONTRACT = {
+  campaignId:
+    "massagebom-region-hero-composite-345-completion095-temporary-v1",
+  assignmentLedgerSha256:
+    "ec3534bedf60159ce263a28ebaa70685d57444e272ee44828142997fdd73dfb2",
+  refinementReceiptSha256:
+    "aaaaff41e6c3856dc889fa69f287f8fd26764aa3efa23b083f587fe008fa243d",
+  publicDeploymentManifestSha256:
+    "0d74773166d961053b3e9561ff2b190c7567ab97f07d1dbfaa125281feb5b60d",
+  themeLedgerDigest:
+    "1f8d83e9fc6fa07f9f805fab288779b19397b2b33f49d2f9c8fb38db2136dd8d",
+  routeProjectionFingerprint: "ea370760c80c915c",
+  imageCount: 345,
+  routeCount: 1291,
+  preservedBaseImageCount: 250,
+  preservedLegacyRouteCount: 862,
+  temporaryImageCount: 95,
+  temporaryRouteCount: 429,
+  temporaryUsedFourTimes: 46,
+  temporaryUsedFiveTimes: 49,
+  legacyUsedThreeTimes: 138,
+  legacyUsedFourTimes: 112,
+  serviceRootRouteCounts: {
+    asan: 13,
+    busan: 122,
+    cheonan: 28,
+    daegu: 96,
+    daejeon: 72,
+    gumi: 24,
+    incheon: 96,
+    jeju: 42,
+    pohang: 32,
+    seoul: 262,
+    gyeonggi: 504,
+  },
+  variantDimensions: {
+    desktop: { height: 922, width: 2048 },
+    mobile: { height: 2048, width: 1024 },
+    tablet: { height: 1024, width: 1536 },
+  },
+} as const;
+
+export const UNDERUSED345_TEMPORARY_V2_REGION_HERO_CONTRACT = {
+  campaignId: "massagebom-region-hero-composite-345-underused-temporary-v2",
+  assignmentLedgerSha256:
+    "9f7978e62c705c3dd75e8090e162193a4e2c688cc8dcd47d684f67e8454cc788",
+  refinementReceiptSha256:
+    "aaaaff41e6c3856dc889fa69f287f8fd26764aa3efa23b083f587fe008fa243d",
+  publicDeploymentManifestSha256:
+    "0d74773166d961053b3e9561ff2b190c7567ab97f07d1dbfaa125281feb5b60d",
+  themeLedgerDigest:
+    "30847d639f5e9c1351ef1136085f2cedd0b0a65fe19ad2d5f8fc64da2d712f88",
+  routeProjectionFingerprint: "b3e8addeb2199c52",
+  imageCount: 345,
+  routeCount: 1291,
+  preservedLegacyRouteCount: 862,
+  addedRouteCount: 429,
+  globallyUsedThreeTimes: 89,
+  globallyUsedFourTimes: 256,
+  globalMaxReuse: 4,
+  serviceRootRouteCounts: {
+    asan: 13,
+    busan: 122,
+    cheonan: 28,
+    daegu: 96,
+    daejeon: 72,
+    gumi: 24,
+    incheon: 96,
+    jeju: 42,
+    pohang: 32,
+    seoul: 262,
+    gyeonggi: 504,
+  },
+  variantDimensions: {
+    desktop: { height: 922, width: 2048 },
+    mobile: { height: 2048, width: 1024 },
+    tablet: { height: 1024, width: 1536 },
+  },
+} as const;
+
 export type RegionHeroVariantName = "desktop" | "tablet" | "mobile";
 
 export type RegionHeroPalette = {
@@ -157,6 +243,10 @@ const CSS_RGBA_PATTERN = /^rgba\(\d{1,3}, \d{1,3}, \d{1,3}, (?:0|1|0?\.\d+)\)$/;
 const PARTIAL_250_IMAGE_ID_PATTERN = /^MBH-(?:00[1-9]|0[1-9]\d|1\d{2}|2[0-4]\d|250)$/;
 const PARTIAL_250_PUBLIC_PATH_PATTERN =
   /^\/images\/region-heroes\/partial-250-v1\/(MBH-\d{3})\/(desktop|tablet|mobile)\.webp$/;
+const TEMPORARY_COMPLETION095_IMAGE_ID_PATTERN =
+  /^MBH-(?:00[1-9]|0[1-9]\d|[12]\d{2}|3[0-3]\d|34[0-5])$/;
+const TEMPORARY_COMPLETION095_PUBLIC_PATH_PATTERN =
+  /^\/images\/region-heroes\/(partial-250-v1|completion-095-v1)\/(MBH-\d{3})\/(desktop|tablet|mobile)\.webp$/;
 
 function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === "object" && value !== null && !Array.isArray(value);
@@ -516,6 +606,272 @@ export async function verifyPartial250RegionHeroLedgerDigest(
   return (await sha256Hex(stableJson(unsigned))) === ledger.digest;
 }
 
+/** Fail-closed contract for the temporary 95-image service-city rollout. */
+export function validateTemporaryCompletion095RegionHeroContract(
+  value: unknown,
+  expectedActiveRoutes?: readonly string[],
+): value is RegionHeroThemeLedger {
+  if (!validateRegionHeroThemeLedger(value) || value.preview_only) return false;
+
+  const contract = TEMPORARY_COMPLETION095_REGION_HERO_CONTRACT;
+  const imageEntries = Object.entries(value.images);
+  const routeEntries = Object.entries(value.routes);
+  if (
+    value.campaign_id !== contract.campaignId ||
+    value.assignment_ledger_sha256 !== contract.assignmentLedgerSha256 ||
+    value.refinement_receipt_sha256 !== contract.refinementReceiptSha256 ||
+    value.public_deployment_manifest_sha256 !==
+      contract.publicDeploymentManifestSha256 ||
+    value.digest !== contract.themeLedgerDigest ||
+    !value.generated_at ||
+    imageEntries.length !== contract.imageCount ||
+    routeEntries.length !== contract.routeCount ||
+    routeProjectionFingerprint(value.routes) !==
+      contract.routeProjectionFingerprint
+  ) {
+    return false;
+  }
+
+  const expectedImageIds = new Set(
+    Array.from(
+      { length: contract.imageCount },
+      (_, index) => `MBH-${String(index + 1).padStart(3, "0")}`,
+    ),
+  );
+  const sourceHashes = new Set<string>();
+  const variantHashes = new Set<string>();
+  for (const [imageId, image] of imageEntries) {
+    if (
+      !TEMPORARY_COMPLETION095_IMAGE_ID_PATTERN.test(imageId) ||
+      !expectedImageIds.delete(imageId)
+    ) {
+      return false;
+    }
+    const numericId = Number(imageId.slice(4));
+    sourceHashes.add(image.source_sha256);
+    for (const profile of ["desktop", "tablet", "mobile"] as const) {
+      const variant = image.variants[profile];
+      const match = TEMPORARY_COMPLETION095_PUBLIC_PATH_PATTERN.exec(
+        variant.public_path,
+      );
+      const dimensions = contract.variantDimensions[profile];
+      const expectedBatch =
+        numericId <= contract.preservedBaseImageCount
+          ? "partial-250-v1"
+          : "completion-095-v1";
+      if (
+        !match ||
+        match[1] !== expectedBatch ||
+        match[2] !== imageId ||
+        match[3] !== profile ||
+        variant.width !== dimensions.width ||
+        variant.height !== dimensions.height
+      ) {
+        return false;
+      }
+      variantHashes.add(variant.sha256);
+    }
+  }
+  if (
+    expectedImageIds.size !== 0 ||
+    sourceHashes.size !== contract.imageCount ||
+    variantHashes.size !== contract.imageCount * 3
+  ) {
+    return false;
+  }
+
+  const legacyReuse = new Map<string, number>();
+  const temporaryReuse = new Map<string, number>();
+  const serviceRootCounts = Object.fromEntries(
+    Object.keys(contract.serviceRootRouteCounts).map((root) => [root, 0]),
+  ) as Record<keyof typeof contract.serviceRootRouteCounts, number>;
+  for (const [route, imageId] of routeEntries) {
+    const root = /^\/areas\/([^/]+)(?:\/|$)/u.exec(route)?.[1] as
+      | keyof typeof serviceRootCounts
+      | undefined;
+    if (!root || !(root in serviceRootCounts)) return false;
+    serviceRootCounts[root] += 1;
+    const target =
+      Number(imageId.slice(4)) <= contract.preservedBaseImageCount
+        ? legacyReuse
+        : temporaryReuse;
+    target.set(imageId, (target.get(imageId) ?? 0) + 1);
+  }
+  if (
+    legacyReuse.size !== contract.preservedBaseImageCount ||
+    [...legacyReuse.values()].filter((count) => count === 3).length !==
+      contract.legacyUsedThreeTimes ||
+    [...legacyReuse.values()].filter((count) => count === 4).length !==
+      contract.legacyUsedFourTimes ||
+    [...legacyReuse.values()].some((count) => count !== 3 && count !== 4) ||
+    temporaryReuse.size !== contract.temporaryImageCount ||
+    [...temporaryReuse.values()].filter((count) => count === 4).length !==
+      contract.temporaryUsedFourTimes ||
+    [...temporaryReuse.values()].filter((count) => count === 5).length !==
+      contract.temporaryUsedFiveTimes ||
+    [...temporaryReuse.values()].some((count) => count !== 4 && count !== 5) ||
+    Object.entries(contract.serviceRootRouteCounts).some(
+      ([root, count]) =>
+        serviceRootCounts[root as keyof typeof serviceRootCounts] !== count,
+    )
+  ) {
+    return false;
+  }
+
+  if (expectedActiveRoutes) {
+    const canonicalExpected = expectedActiveRoutes.map(canonicalizeRegionPath);
+    if (
+      canonicalExpected.length !== contract.routeCount ||
+      canonicalExpected.some((route) => route === null) ||
+      new Set(canonicalExpected).size !== contract.routeCount
+    ) {
+      return false;
+    }
+    const actualRoutes = new Set(Object.keys(value.routes));
+    if (
+      (canonicalExpected as string[]).some((route) => !actualRoutes.has(route))
+    ) {
+      return false;
+    }
+  }
+  return true;
+}
+
+export async function verifyTemporaryCompletion095RegionHeroLedgerDigest(
+  value: unknown,
+): Promise<boolean> {
+  if (!validateTemporaryCompletion095RegionHeroContract(value)) return false;
+  const ledger = value as RegionHeroThemeLedger;
+  const unsigned = { ...ledger, digest: undefined };
+  return (await sha256Hex(stableJson(unsigned))) === ledger.digest;
+}
+
+/** Strict runtime gate for the user-revised max-four temporary rollout. */
+export function validateUnderused345TemporaryV2RegionHeroContract(
+  value: unknown,
+  expectedActiveRoutes?: readonly string[],
+): value is RegionHeroThemeLedger {
+  if (!validateRegionHeroThemeLedger(value) || value.preview_only) return false;
+  const contract = UNDERUSED345_TEMPORARY_V2_REGION_HERO_CONTRACT;
+  const imageEntries = Object.entries(value.images);
+  const routeEntries = Object.entries(value.routes);
+  if (
+    value.campaign_id !== contract.campaignId ||
+    value.assignment_ledger_sha256 !== contract.assignmentLedgerSha256 ||
+    value.refinement_receipt_sha256 !== contract.refinementReceiptSha256 ||
+    value.public_deployment_manifest_sha256 !==
+      contract.publicDeploymentManifestSha256 ||
+    value.digest !== contract.themeLedgerDigest ||
+    !value.generated_at ||
+    imageEntries.length !== contract.imageCount ||
+    routeEntries.length !== contract.routeCount ||
+    routeProjectionFingerprint(value.routes) !==
+      contract.routeProjectionFingerprint
+  ) {
+    return false;
+  }
+
+  const expectedImageIds = new Set(
+    Array.from(
+      { length: contract.imageCount },
+      (_, index) => `MBH-${String(index + 1).padStart(3, "0")}`,
+    ),
+  );
+  const sourceHashes = new Set<string>();
+  const variantHashes = new Set<string>();
+  for (const [imageId, image] of imageEntries) {
+    if (
+      !TEMPORARY_COMPLETION095_IMAGE_ID_PATTERN.test(imageId) ||
+      !expectedImageIds.delete(imageId)
+    ) {
+      return false;
+    }
+    sourceHashes.add(image.source_sha256);
+    const numericId = Number(imageId.slice(4));
+    for (const profile of ["desktop", "tablet", "mobile"] as const) {
+      const variant = image.variants[profile];
+      const match = TEMPORARY_COMPLETION095_PUBLIC_PATH_PATTERN.exec(
+        variant.public_path,
+      );
+      const dimensions = contract.variantDimensions[profile];
+      const expectedBatch =
+        numericId <= 250 ? "partial-250-v1" : "completion-095-v1";
+      if (
+        !match ||
+        match[1] !== expectedBatch ||
+        match[2] !== imageId ||
+        match[3] !== profile ||
+        variant.width !== dimensions.width ||
+        variant.height !== dimensions.height
+      ) {
+        return false;
+      }
+      variantHashes.add(variant.sha256);
+    }
+  }
+  if (
+    expectedImageIds.size !== 0 ||
+    sourceHashes.size !== contract.imageCount ||
+    variantHashes.size !== contract.imageCount * 3
+  ) {
+    return false;
+  }
+
+  const reuse = new Map<string, number>();
+  const serviceRootCounts = Object.fromEntries(
+    Object.keys(contract.serviceRootRouteCounts).map((root) => [root, 0]),
+  ) as Record<keyof typeof contract.serviceRootRouteCounts, number>;
+  for (const [route, imageId] of routeEntries) {
+    const root = /^\/areas\/([^/]+)(?:\/|$)/u.exec(route)?.[1] as
+      | keyof typeof serviceRootCounts
+      | undefined;
+    if (!root || !(root in serviceRootCounts)) return false;
+    serviceRootCounts[root] += 1;
+    reuse.set(imageId, (reuse.get(imageId) ?? 0) + 1);
+  }
+  if (
+    reuse.size !== contract.imageCount ||
+    Math.max(...reuse.values()) !== contract.globalMaxReuse ||
+    [...reuse.values()].filter((count) => count === 3).length !==
+      contract.globallyUsedThreeTimes ||
+    [...reuse.values()].filter((count) => count === 4).length !==
+      contract.globallyUsedFourTimes ||
+    [...reuse.values()].some((count) => count !== 3 && count !== 4) ||
+    Object.entries(contract.serviceRootRouteCounts).some(
+      ([root, count]) =>
+        serviceRootCounts[root as keyof typeof serviceRootCounts] !== count,
+    )
+  ) {
+    return false;
+  }
+  if (expectedActiveRoutes) {
+    const canonicalExpected = expectedActiveRoutes.map(canonicalizeRegionPath);
+    if (
+      canonicalExpected.length !== contract.routeCount ||
+      canonicalExpected.some((route) => route === null) ||
+      new Set(canonicalExpected).size !== contract.routeCount
+    ) {
+      return false;
+    }
+    const actualRoutes = new Set(Object.keys(value.routes));
+    if (
+      (canonicalExpected as string[]).some((route) => !actualRoutes.has(route))
+    ) {
+      return false;
+    }
+  }
+  return true;
+}
+
+export async function verifyUnderused345TemporaryV2RegionHeroLedgerDigest(
+  value: unknown,
+): Promise<boolean> {
+  if (!validateUnderused345TemporaryV2RegionHeroContract(value)) return false;
+  const ledger = value as RegionHeroThemeLedger;
+  const unsigned = { ...ledger, digest: undefined };
+  return (await sha256Hex(stableJson(unsigned))) === ledger.digest;
+}
+
 export function canonicalizeRegionPath(pathname: string): string | null {
   const withoutQuery = pathname.split(/[?#]/u, 1)[0];
   const rawSegments = withoutQuery.split("/").filter(Boolean);
@@ -547,7 +903,8 @@ const EMPTY_LEDGER: RegionHeroThemeLedger = {
 export const REGION_HERO_THEME_LEDGER: RegionHeroThemeLedger =
   validateRegionHeroThemeLedger(generatedLedger) &&
   (generatedLedger.preview_only ||
-    validatePartial250RegionHeroContract(generatedLedger))
+    validatePartial250RegionHeroContract(generatedLedger) ||
+    validateUnderused345TemporaryV2RegionHeroContract(generatedLedger))
     ? generatedLedger
     : EMPTY_LEDGER;
 

@@ -25,7 +25,7 @@ export function ProvinceDirectory({ labelledBy }: ProvinceDirectoryProps) {
                 className="province-card-image"
                 fill
                 loading={index < 4 ? "eager" : "lazy"}
-                sizes="(max-width: 760px) calc(100vw - 32px), (max-width: 980px) 46vw, 24vw"
+                sizes="(max-width: 760px) calc((100vw - 50px) / 2), (max-width: 980px) 46vw, 24vw"
                 src={`/images/regions/${area.imageKey}.webp`}
                 unoptimized
               />

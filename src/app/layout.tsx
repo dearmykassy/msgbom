@@ -30,6 +30,12 @@ export const metadata: Metadata = {
     follow: true,
     googleBot: { index: true, follow: true, "max-image-preview": "large" },
   },
+  verification: {
+    google: "6YG_399Wipm_HSlmGm53HTzgga4RqY7z1JUmJUME7_c",
+    other: {
+      "naver-site-verification": "b4da94732000738805ad2a2bb96eab983fea7156",
+    },
+  },
   openGraph: {
     type: "website",
     locale: "ko_KR",

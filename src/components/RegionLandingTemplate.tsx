@@ -144,6 +144,7 @@ function RegionPaymentTrust({
           <h2 id="region-payment-safety-title">{copy.title}</h2>
           <a
             aria-label={`${contactPhone.display}으로 ${regionName} 전화상담`}
+            data-analytics-location="region_payment"
             href={contactPhone.telHref}
           >
             공식 번호로 전화상담
@@ -384,6 +385,7 @@ export function RegionLandingTemplate({
               <a
                 aria-label={`${contactPhone.display}으로 전화상담`}
                 className="button button-blossom"
+                data-analytics-location="region_hero"
                 href={contactPhone.telHref}
               >
                 전화상담
@@ -442,6 +444,7 @@ export function RegionLandingTemplate({
             <p>{customerCopy.pricing.callPrompt}</p>
             <a
               aria-label={`${contactPhone.display}으로 코스 전화상담`}
+              data-analytics-location="region_pricing"
               href={contactPhone.telHref}
             >
               이 코스로 전화상담
@@ -473,6 +476,7 @@ export function RegionLandingTemplate({
 
       <a
         className="region-phone-fab"
+        data-analytics-location="region_floating"
         href={contactPhone.telHref}
         aria-label={`${contactPhone.display}으로 전화상담`}
       >

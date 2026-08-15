@@ -65,7 +65,10 @@ export function BlogPostPage({ post }: BlogPostPageProps) {
                 <Link href="/areas">운영 지역 안내</Link>
                 <Link href="/guide">전화상담 준비 항목</Link>
                 <Link href="/pricing">코스·가격표</Link>
-                <a href={DEFAULT_BUSINESS_CONTACT_PHONE.telHref}>
+                <a
+                  data-analytics-location="blog_consultation"
+                  href={DEFAULT_BUSINESS_CONTACT_PHONE.telHref}
+                >
                   {DEFAULT_BUSINESS_CONTACT_PHONE.display} 전화상담
                 </a>
               </div>

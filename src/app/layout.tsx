@@ -1,16 +1,23 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
+import { Suspense } from "react";
 
 import "@fontsource-variable/noto-sans-kr/wght.css";
 import "@fontsource-variable/noto-serif-kr/wght.css";
 import "@fontsource-variable/asta-sans/wght.css";
 
+import { GoogleAnalytics } from "@/components/GoogleAnalytics";
 import { RegionAwareHeader } from "@/components/RegionAwareHeader";
 import { DEFAULT_BUSINESS_CONTACT_PHONE } from "@/data/business-settings";
+import { normalizeGaMeasurementId } from "@/lib/analytics";
 import { SITE_ORIGIN } from "@/lib/site-config";
 
 import "./globals.css";
+
+const GA_MEASUREMENT_ID = normalizeGaMeasurementId(
+  process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID,
+);
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_ORIGIN),
@@ -117,7 +124,10 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
             <div>
               <h2>운영 정보</h2>
               <p>코스별 가격표 운영</p>
-              <a href={DEFAULT_BUSINESS_CONTACT_PHONE.telHref}>
+              <a
+                data-analytics-location="footer"
+                href={DEFAULT_BUSINESS_CONTACT_PHONE.telHref}
+              >
                 전화상담 {DEFAULT_BUSINESS_CONTACT_PHONE.display}
               </a>
               <p>전화상담: 24시간</p>
@@ -129,6 +139,14 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
             <span>24시간 전화상담 · 100% 현장 후불</span>
           </div>
         </footer>
+        {GA_MEASUREMENT_ID ? (
+          <Suspense fallback={null}>
+            <GoogleAnalytics
+              measurementId={GA_MEASUREMENT_ID}
+              platformId="msgbom"
+            />
+          </Suspense>
+        ) : null}
       </body>
     </html>
   );

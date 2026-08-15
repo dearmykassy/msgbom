@@ -69,6 +69,7 @@ export function ServiceGuide({
             </p>
             <a
               aria-label={`${contactPhone.display}으로 전화상담`}
+              data-analytics-location="region_service_guide"
               href={contactPhone.telHref}
             >
               {contactPhone.display} 전화상담

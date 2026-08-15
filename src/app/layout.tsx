@@ -76,6 +76,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
               </Link>
               <Link href="/guide">이용안내</Link>
               <Link href="/pricing">코스·가격</Link>
+              <Link href="/blog">블로그</Link>
               <Link href="/bomchelin/food">봄슐랭 맛집</Link>
               <Link href="/bomchelin/date">데이트 코스</Link>
               <Link href="/notice">공지사항</Link>
@@ -88,6 +89,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
             </Link>
             <Link href="/guide">이용안내</Link>
             <Link href="/pricing">코스·가격</Link>
+            <Link href="/blog">블로그</Link>
             <Link href="/bomchelin/food">봄슐랭 맛집</Link>
             <Link href="/bomchelin/date">데이트 코스</Link>
             <Link href="/notice">공지사항</Link>

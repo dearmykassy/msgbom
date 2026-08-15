@@ -7,7 +7,16 @@ import {
 import { SITE_ORIGIN } from "@/lib/site-config";
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const paths = ["", "/areas", "/guide", "/bomchelin", "/notice"];
+  const paths = [
+    "",
+    "/areas",
+    "/guide",
+    "/bomchelin",
+    "/notice",
+    "/blog",
+    "/blog/masaji-shop-gagi-himdeul-ttae",
+    "/blog/jibeseo-masaji-badeul-su-issnayo",
+  ];
 
   const activeRegionPaths = getAllRegionStaticParams()
     .map(({ segments }) => resolveRegionNode(segments))

@@ -70,6 +70,14 @@ function BrandLogo({ footer = false }: { footer?: boolean }) {
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html lang="ko" data-scroll-behavior="smooth">
+      <head>
+        <link
+          href={`${SITE_ORIGIN}/rss.xml`}
+          rel="alternate"
+          title="마사지봄 블로그 RSS"
+          type="application/rss+xml"
+        />
+      </head>
       <body>
         <RegionAwareHeader>
           <div className="shell header-inner">

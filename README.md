@@ -10,7 +10,7 @@ Netlify용 Next.js 소스입니다. 원본 프로젝트의 테스트, DB, MCP, �
 2. Netlify에서 **Add new project → Import an existing project**로 저장소를 연결합니다.
 3. 빌드 설정은 `netlify.toml`에서 자동으로 읽습니다.
 4. 배포가 끝나면 Domain management에서 `msgbom.kr`을 추가하고 primary domain으로 지정합니다.
-5. `https://msgbom.kr/robots.txt`, `/sitemap.xml`, `/areas/seoul`을 확인합니다.
+5. `https://msgbom.kr/robots.txt`, `/sitemap.xml`, `/rss.xml`, `/areas/seoul`을 확인합니다.
 
 현재 공개 앱은 DB나 비밀 API 키 없이 빌드됩니다. canonical, robots, sitemap의
 운영 주소는 `src/lib/site-config.ts`에 `https://msgbom.kr`로 고정되어 있습니다.

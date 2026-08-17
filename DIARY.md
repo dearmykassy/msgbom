@@ -16,3 +16,7 @@
 - RSS 단위 테스트 2건과 기존 analytics 테스트 6건이 통과했고, Next 전체
   빌드는 1,318개 정적 페이지와 `/rss.xml`을 생성했다. 빌드 XML은 6,374
   bytes·item 2건이며 `xmllint`와 홈의 RSS 자동 발견 링크 1건을 통과했다.
+- 운영 배포 후 `https://msgbom.kr/rss.xml`은 HTTP 200,
+  `application/rss+xml`, item 2건, SHA-256
+  `b0d5cf63d4184c5bec3cfe563c64e37f3e2c050de3a0c12fc5bec2b11b5035ff`이며
+  운영 홈의 autodiscovery 링크도 정확히 1건이다.

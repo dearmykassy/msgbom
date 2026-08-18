@@ -12,6 +12,7 @@ import {
   REGION_SERVICE_KEYWORD_SUFFIXES,
   type RegionServiceKeywordSuffix,
 } from "../data/region-service-keywords";
+import { getMetaRegionLabel } from "./region-meta-label";
 
 export const REGION_SEO_COPY_UNAVAILABLE =
   "REGION_SEO_COPY_UNAVAILABLE" as const;
@@ -60,6 +61,7 @@ export type RegionSeoCopy = {
   variationKey: string;
   keywords: {
     all: Readonly<Record<RegionKeywordKey, string>>;
+    metadata: Readonly<Record<RegionKeywordKey, string>>;
     primary: string;
     visible: readonly string[];
   };
@@ -306,13 +308,13 @@ function buildMetadata(
   options: RegionSeoCopyOptions,
   scopeLabel: string,
   profileIndex: number,
-  keywords: ReturnType<typeof buildRegionServiceKeywords>,
+  metadataKeywords: ReturnType<typeof buildRegionServiceKeywords>,
 ): RegionSeoCopy["metadata"] {
   const identity = options.approvedIdentity;
   if (!identity) {
     return {
-      title: `${keywords.출장마사지} 이용 정보 | 마사지봄`,
-      description: `${scopeLabel} 기준 ${keywords.출장마사지} 정보를 찾을 때 지역 범위, 코스·가격, 이용 전 확인 항목을 순서대로 살펴볼 수 있는 안내 페이지입니다.`,
+      title: `${metadataKeywords.출장마사지} 이용 정보 | 마사지봄`,
+      description: `${scopeLabel} 기준 ${metadataKeywords.출장마사지} 정보를 찾을 때 지역 범위, 코스·가격, 이용 전 확인 항목을 순서대로 살펴볼 수 있는 안내 페이지입니다.`,
       variationPlan: "fallback",
     };
   }
@@ -336,8 +338,9 @@ function buildMetadata(
             EXPANDED_META_COURSE_VARIANTS.length *
             EXPANDED_META_CALL_VARIANTS.length),
       ) % EXPANDED_META_PAYMENT_VARIANTS.length;
-    const primaryKeyword = keywords["출장마사지"];
-    const secondaryKeyword = keywords[REGION_SERVICE_KEYWORD_SUFFIXES[1]];
+    const primaryKeyword = metadataKeywords["출장마사지"];
+    const secondaryKeyword =
+      metadataKeywords[REGION_SERVICE_KEYWORD_SUFFIXES[1]];
     const sourceNames = node.representative?.sourceNames ?? [];
     const coverageAnchor =
       sourceNames.length > 1
@@ -364,8 +367,8 @@ function buildMetadata(
         (META_OPENING_VARIANTS.length * META_CORE_VARIANTS.length),
     ) % META_CLOSING_VARIANTS.length;
   const opening = META_OPENING_VARIANTS[openingIndex](identity, scopeLabel);
-  const primaryKeyword = keywords["출장마사지"];
-  const secondaryKeyword = keywords[REGION_SERVICE_KEYWORD_SUFFIXES[1]];
+  const primaryKeyword = metadataKeywords["출장마사지"];
+  const secondaryKeyword = metadataKeywords[REGION_SERVICE_KEYWORD_SUFFIXES[1]];
   const core = META_CORE_VARIANTS[coreIndex](
     primaryKeyword,
     secondaryKeyword,
@@ -403,6 +406,9 @@ export function buildRegionSeoCopy(
   const scopeLabel = hierarchy.join(" ");
   const profileIndex = profileIndexFor(node);
   const keywords = buildRegionServiceKeywords(regionName);
+  const metadataKeywords = buildRegionServiceKeywords(
+    getMetaRegionLabel(node.path),
+  );
   const visible = Object.values(keywords);
   const heroLead = HERO_LEAD_VARIANTS[profileIndex % HERO_LEAD_VARIANTS.length](
     scopeLabel,
@@ -433,10 +439,17 @@ export function buildRegionSeoCopy(
     variationKey: `${node.kind}:${node.path}`,
     keywords: {
       all: keywords,
+      metadata: metadataKeywords,
       primary: keywords.출장마사지,
       visible,
     },
-    metadata: buildMetadata(node, options, scopeLabel, profileIndex, keywords),
+    metadata: buildMetadata(
+      node,
+      options,
+      scopeLabel,
+      profileIndex,
+      metadataKeywords,
+    ),
     hero: {
       heading: {
         tag: "h1",

@@ -37,8 +37,14 @@ pnpm install
 pnpm dev
 pnpm typecheck
 pnpm test:analytics
+pnpm test:region-meta-label
+pnpm test:region-metadata
 pnpm build
 ```
+
+`test:region-metadata`는 먼저 프로덕션 빌드를 만든 뒤 1,291개 운영 지역의
+title·keywords·description, 고유성, canonical과 공식 breadcrumb 표기를 전수
+검사합니다.
 
 Netlify는 `netlify.toml`의 설정으로 이 저장소를 빌드합니다. 운영 origin은
 `src/lib/site-config.ts`에 `https://msgbom.kr`로 고정되어 canonical, Open Graph,

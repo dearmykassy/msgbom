@@ -69,7 +69,7 @@ export async function generateMetadata({ params }: AreaRouteProps): Promise<Meta
       ? { absolute: seoCopy.metadata.title }
       : `${node.displayName} 지역 안내`,
     description,
-    keywords: seoCopy ? Object.values(seoCopy.keywords.all) : undefined,
+    keywords: seoCopy ? Object.values(seoCopy.keywords.metadata) : undefined,
     alternates: { canonical: node.path },
     openGraph: seoCopy
       ? {

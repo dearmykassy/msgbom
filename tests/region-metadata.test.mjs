@@ -41,13 +41,6 @@ const forbiddenFormalTarget = new RegExp(
   `(?:${formalRegionTokens.map(escapeRegExp).join("|")})(?=(?:${serviceKeywords.join("|")}))`,
   "u",
 );
-const standaloneFormalRegionTokens = formalRegionTokens.map((token) => [
-  token,
-  new RegExp(
-    `(?:^|[\\s,·|:()])${escapeRegExp(token)}(?=$|[\\s,·|:().])`,
-    "u",
-  ),
-]);
 
 function decodeHtml(value) {
   return value
@@ -162,11 +155,9 @@ test("all approved regional routes have unique concise metadata", () => {
         forbiddenFormalTarget,
         `${entry.path}: formal suffix remains in ${field}`,
       );
-      for (const [formalRegionToken, standalonePattern] of
-        standaloneFormalRegionTokens) {
-        assert.doesNotMatch(
-          value,
-          standalonePattern,
+      for (const formalRegionToken of formalRegionTokens) {
+        assert.ok(
+          !value.includes(formalRegionToken),
           `${entry.path}: official token ${formalRegionToken} remains in ${field}`,
         );
       }

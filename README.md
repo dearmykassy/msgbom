@@ -1,19 +1,51 @@
-# 마사지봄 Netlify 배포본
+# 마사지봄
 
-이 폴더는 `https://msgbom.kr` 운영 배포에 필요한 코드와 공개 이미지만 담은
-Netlify용 Next.js 소스입니다. 원본 프로젝트의 테스트, DB, MCP, 생성 파이프라인,
-내부 문서와 로그인 세션은 포함하지 않습니다.
+[마사지봄 공식 사이트](https://msgbom.kr/)
 
-## 권장 배포
+마사지봄은 지역을 단계별로 찾아보고 코스, 이용 절차와 예약 전 확인사항을
+살펴볼 수 있는 방문 마사지 안내 사이트입니다. 이 저장소는 운영 배포에 필요한
+Next.js 코드와 공개 이미지만 담으며 DB, 로그인 세션과 비밀 키는 포함하지 않습니다.
 
-1. 이 폴더만 별도 Git 저장소에 올립니다.
-2. Netlify에서 **Add new project → Import an existing project**로 저장소를 연결합니다.
-3. 빌드 설정은 `netlify.toml`에서 자동으로 읽습니다.
-4. 배포가 끝나면 Domain management에서 `msgbom.kr`을 추가하고 primary domain으로 지정합니다.
-5. `https://msgbom.kr/robots.txt`, `/sitemap.xml`, `/rss.xml`, `/areas/seoul`을 확인합니다.
+## 운영 페이지
 
-현재 공개 앱은 DB나 비밀 API 키 없이 빌드됩니다. canonical, robots, sitemap의
-운영 주소는 `src/lib/site-config.ts`에 `https://msgbom.kr`로 고정되어 있습니다.
+- [지역 찾기](https://msgbom.kr/areas)
+- [가격 안내](https://msgbom.kr/pricing)
+- [이용 가이드](https://msgbom.kr/guide)
+- [공지사항](https://msgbom.kr/notice)
+- [블로그](https://msgbom.kr/blog)
+- [XML 사이트맵](https://msgbom.kr/sitemap.xml)
+- [RSS 2.0 피드](https://msgbom.kr/rss.xml)
+
+## 지역 안내와 검색 구조
+
+- 11개 상위 권역에서 시·군·구와 세부 지역으로 내려가는 내부 링크 구조를 사용합니다.
+- 운영 중인 지역 페이지는 1,291개이며 각 페이지는 고유 canonical URL을 가집니다.
+- 사이트맵에는 홈, 지역·안내·편집 페이지를 합친 1,299개 URL이 들어 있습니다.
+- `robots.txt`는 공개 페이지 수집을 허용하고 사이트맵 위치를 안내합니다. 관리자,
+  API와 계정 경로는 수집 대상에서 제외합니다.
+- RSS에는 발행일이 확인된 블로그 글 2건의 본문을 싣습니다. 지역 URL 전체 목록은
+  RSS가 아니라 사이트맵에서 관리합니다.
+
+지역 문서는 확인 가능한 행정구역과 실제 운영 정보를 기준으로 작성합니다. 근거 없는
+도착 시간, 후기, 인력 규모, 효능이나 지역 이용량을 만들지 않으며 제목과 본문은
+키워드 반복보다 사람이 읽기 쉬운 안내를 우선합니다.
+
+## 개발과 배포
+
+```bash
+pnpm install
+pnpm dev
+pnpm typecheck
+pnpm test:analytics
+pnpm build
+```
+
+Netlify는 `netlify.toml`의 설정으로 이 저장소를 빌드합니다. 운영 origin은
+`src/lib/site-config.ts`에 `https://msgbom.kr`로 고정되어 canonical, Open Graph,
+robots와 sitemap이 같은 호스트를 가리킵니다.
+
+`output: "export"`를 추가하지 마세요. 기존 번호 행정동 309개의 영구 308 이동과
+Next 이미지 처리를 보존하기 위해 Netlify의 Next.js/OpenNext 배포를 사용합니다.
 
 ## GA4 / Netlify 환경변수
 
@@ -22,6 +54,3 @@ Environment variables**에 `NEXT_PUBLIC_GA_MEASUREMENT_ID=G-XXXXXXXXXX`를 등�
 다시 배포합니다. 이 공개 빌드 변수가 없거나 형식이 잘못되면 Google 태그를 전혀
 로드하지 않습니다. 이벤트 정의, 개인정보 제한과 전화 클릭 지표의 한계는
 [`docs/analytics.md`](docs/analytics.md)를 참고하세요.
-
-`output: "export"`를 추가하지 마세요. 기존 번호 행정동 309개의 영구 308 이동과
-Next 이미지 처리를 보존하기 위해 Netlify의 Next.js/OpenNext 배포를 사용합니다.

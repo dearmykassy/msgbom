@@ -1,4 +1,4 @@
-import Link from "next/link";
+import Link from "@/components/SiteLink";
 
 import { PricingTable } from "@/components/PricingTable";
 import { RegionGrid } from "@/components/RegionGrid";

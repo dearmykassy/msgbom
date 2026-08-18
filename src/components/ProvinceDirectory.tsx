@@ -1,5 +1,5 @@
 import Image from "next/image";
-import Link from "next/link";
+import Link from "@/components/SiteLink";
 
 import { AREA_DIRECTORY_CARDS } from "@/data/area-directory-cards";
 

@@ -10,7 +10,8 @@
     "test:region-meta-label": "node --experimental-strip-types --test tests/region-meta-label.test.mts",
     "test:region-metadata": "pnpm build && node --test tests/region-metadata.test.mjs",
     "test:rss": "node --experimental-strip-types --test tests/rss.test.mts",
-    "test": "pnpm test:analytics && pnpm test:rss && pnpm test:region-meta-label && pnpm test:region-metadata",
+    "test:crawl-contract": "node --experimental-strip-types --test tests/crawl-contract.test.mts",
+    "test": "pnpm test:analytics && pnpm test:rss && pnpm test:region-meta-label && pnpm test:crawl-contract && pnpm test:region-metadata",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {

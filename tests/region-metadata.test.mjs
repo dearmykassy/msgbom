@@ -6,6 +6,19 @@ import { fileURLToPath } from "node:url";
 
 const repositoryRoot = fileURLToPath(new URL("..", import.meta.url));
 const productionOrigin = "https://msgbom.kr";
+const initialPublicLastModified = new Date("2026-08-14T05:33:04+09:00");
+const editorialLastModified = new Date("2026-08-15T13:01:53+09:00");
+const regionalLastModified = new Date("2026-08-19T00:59:42+09:00");
+const fixedSitemapPaths = [
+  "",
+  "/areas",
+  "/guide",
+  "/bomchelin",
+  "/notice",
+  "/blog",
+  "/blog/masaji-shop-gagi-himdeul-ttae",
+  "/blog/jibeseo-masaji-badeul-su-issnayo",
+];
 const serviceKeywords = [
   "출장마사지",
   "출장안마",
@@ -26,6 +39,10 @@ const approvedManifest = JSON.parse(
 );
 const prerenderManifest = JSON.parse(
   readFileSync(join(repositoryRoot, ".next/prerender-manifest.json"), "utf8"),
+);
+const sitemapXml = readFileSync(
+  join(repositoryRoot, ".next/server/app/sitemap.xml.body"),
+  "utf8",
 );
 const formalRegionTokens = [
   ...new Set(
@@ -222,6 +239,46 @@ test("duplicate short names use similarly shortened parent labels", () => {
   for (const [path, expectedPrimaryKeyword] of examples) {
     assert.equal(metadataFor(path).keywordList[0], expectedPrimaryKeyword, path);
   }
+});
+
+test("sitemap keeps the 1,299 canonical inventory and truthful lastmod only", () => {
+  const entries = [...sitemapXml.matchAll(/<url>([\s\S]*?)<\/url>/gu)].map(
+    (match) => match[1],
+  );
+  const expectedUrls = new Set(
+    [...fixedSitemapPaths, ...approvedManifest.entries.map((entry) => entry.path)].map(
+      (path) => `${productionOrigin}${path}`,
+    ),
+  );
+  const actualUrls = new Set();
+
+  assert.equal(entries.length, 1_299);
+  assert.doesNotMatch(sitemapXml, /<changefreq>|<priority>/u);
+
+  for (const entry of entries) {
+    const location = /<loc>([^<]+)<\/loc>/u.exec(entry)?.[1];
+    const lastModifiedValues = [...entry.matchAll(/<lastmod>([^<]+)<\/lastmod>/gu)].map(
+      (match) => match[1],
+    );
+
+    assert.ok(location, "sitemap entry is missing loc");
+    assert.deepEqual(lastModifiedValues.length, 1, `${location}: lastmod count`);
+    const expectedLastModified = location.startsWith(`${productionOrigin}/areas/`)
+      ? regionalLastModified
+      : location === `${productionOrigin}/blog` ||
+          location.startsWith(`${productionOrigin}/blog/`)
+        ? editorialLastModified
+        : initialPublicLastModified;
+    assert.equal(
+      new Date(lastModifiedValues[0]).toISOString(),
+      expectedLastModified.toISOString(),
+      `${location}: lastmod changed without a page revision`,
+    );
+    assert.ok(!actualUrls.has(location), `${location}: duplicate sitemap URL`);
+    actualUrls.add(location);
+  }
+
+  assert.deepEqual(actualUrls, expectedUrls);
 });
 
 test("구 군 읍 면 동 리 remain intact in regional metadata", () => {

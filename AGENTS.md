@@ -9,6 +9,15 @@
   RSS; sitemap remains the complete crawl inventory.
 - Do not store secrets in tracked files. Preserve the current public phone,
   pricing, verification metadata and index policy unless explicitly changed.
+- Every internal Next.js link must use `src/components/SiteLink.tsx`; no other
+  source file may import `next/link` directly. The wrapper must force
+  `prefetch={false}` in production so crawler rendering does not spend crawl
+  requests on `?_rsc=` prefetch responses, while preserving the rendered
+  anchor, client-side click navigation, handlers and accessibility props.
+- Sitemap entries use stable, evidenced route-group `lastModified` values from
+  `src/lib/site-config.ts`. Update only the group whose corresponding public
+  metadata or content actually changes, never at build time. Do not emit
+  `changeFrequency` or `priority`; preserve the exact canonical URL inventory.
 - Regional `title`, `keywords` and `description` metadata must target the
   concise labels customers search. Remove only a token-final `특별자치도`,
   `특별자치시`, `특별시`, `광역시`, `도` or `시` (longest match first), so

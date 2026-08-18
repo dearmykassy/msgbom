@@ -1,4 +1,4 @@
-import Link from "next/link";
+import Link from "@/components/SiteLink";
 
 import { DEFAULT_BUSINESS_CONTACT_PHONE } from "@/data/business-settings";
 import {

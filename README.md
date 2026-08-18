@@ -21,6 +21,10 @@ Next.js 코드와 공개 이미지만 담으며 DB, 로그인 세션과 비밀 �
 - 11개 상위 권역에서 시·군·구와 세부 지역으로 내려가는 내부 링크 구조를 사용합니다.
 - 운영 중인 지역 페이지는 1,291개이며 각 페이지는 고유 canonical URL을 가집니다.
 - 사이트맵에는 홈, 지역·안내·편집 페이지를 합친 1,299개 URL이 들어 있습니다.
+- 사이트맵의 `lastmod`는 초기 고정 페이지, 편집 문서, 지역 문서별로 실제 마지막
+  유의미한 배포 커밋 시각을 사용합니다. 빌드할 때마다 날짜를 바꾸지 않으며 해당
+  경로 그룹의 실제 공개 내용이 수정될 때만 그 그룹의 revision을 갱신합니다.
+  검색엔진이 참고하지 않는 `changefreq`와 `priority`는 내보내지 않습니다.
 - `robots.txt`는 공개 페이지 수집을 허용하고 사이트맵 위치를 안내합니다. 관리자,
   API와 계정 경로는 수집 대상에서 제외합니다.
 - RSS에는 발행일이 확인된 블로그 글 2건의 본문을 싣습니다. 지역 URL 전체 목록은
@@ -45,6 +49,12 @@ pnpm build
 `test:region-metadata`는 먼저 프로덕션 빌드를 만든 뒤 1,291개 운영 지역의
 title·keywords·description, 고유성, 메타 내 공식 행정 토큰 부재, canonical과
 공식 breadcrumb 표기를 전수 검사합니다.
+
+모든 내부 링크는 `src/components/SiteLink.tsx`를 통합니다. 운영 빌드에서는
+자동 prefetch를 꺼 Googlebot 렌더링이 대량의 `?_rsc=` 응답을 미리 요청하지
+않게 하되, 서버 HTML의 실제 `<a href>`, 클릭 이동과 접근성 속성은 유지합니다.
+`test:crawl-contract`는 중앙 wrapper 밖의 직접 `next/link` import가 다시
+생기지 않는지와 운영 prefetch 강제 차단을 검사합니다.
 
 Netlify는 `netlify.toml`의 설정으로 이 저장소를 빌드합니다. 운영 origin은
 `src/lib/site-config.ts`에 `https://msgbom.kr`로 고정되어 canonical, Open Graph,

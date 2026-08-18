@@ -1,4 +1,4 @@
-import Link from "next/link";
+import Link from "@/components/SiteLink";
 
 type EditorialScaffoldProps = {
   kind: "food" | "date";

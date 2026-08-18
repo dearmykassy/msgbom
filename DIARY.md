@@ -1,5 +1,25 @@
 # 마사지봄 배포 기록
 
+## 2026-08-19 — Googlebot RSC prefetch 요청 차단
+
+- Search Console 호스트 크롤 통계에서 총 3,061건 중 React Server Component
+  `?_rsc=` 요청이 2,643건(86%)을 차지하고, 실제 HTML은 9%에 그친 상태를
+  기준으로 링크 prefetch 계약을 점검했다. 응답 실패나 속도 문제가 아니라
+  Googlebot 렌더링 중 자동 prefetch가 수집 요청을 소모하는 형태다.
+- 모든 내부 `next/link` 사용을 `SiteLink` 경계로 모으고 운영 빌드에서는 호출부
+  설정과 관계없이 `prefetch={false}`를 적용한다. 실제 `<a href>`, 클릭
+  내비게이션, 이벤트 처리와 접근성 속성은 Next Link에 그대로 전달한다.
+- sitemap 1,299개 URL은 초기 고정 페이지(2026-08-14 05:33:04 KST), 편집
+  문서(2026-08-15 13:01:53 KST), 지역 메타(2026-08-19 00:59:42 KST)의
+  실제 유의미한 배포 커밋 시각을 경로별 `lastModified`로 기록했다. 빌드 시각은
+  사용하지 않으며 해당 경로 그룹의 공개 내용이 다시 바뀔 때만 갱신한다.
+  검색엔진이 무시하는 `changefreq`와 `priority`는 제거했다.
+- `pnpm test`, `pnpm typecheck`, 운영 빌드를 통과했다. 빌드는 정적 페이지
+  1,318개를 생성했고, sitemap의 canonical URL 1,299개와 `lastmod` 1,299개를
+  전수 비교했다. 중앙 wrapper 밖의 `next/link` import/동적 import/require는
+  0개이며 빌드 HTML에는 실제 anchor 63,910개가 남아 있다. 운영 산출물에
+  직렬화된 link prefetch 값 146,947개도 전부 `false`로 확인했다.
+
 ## 2026-08-19 — 고객 검색형 지역 메타
 
 - 지역 페이지의 `title`, `keywords`, `description`에서만 행정명 끝의

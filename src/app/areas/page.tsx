@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import Link from "next/link";
+import Link from "@/components/SiteLink";
 
 import { ProvinceDirectory } from "@/components/ProvinceDirectory";
 import { RegionSearch } from "@/components/RegionSearch";

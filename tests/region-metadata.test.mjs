@@ -36,10 +36,18 @@ const formalRegionTokens = [
     ),
   ),
 ].sort((left, right) => right.length - left.length);
+const escapeRegExp = (value) => value.replace(/[.*+?^${}()|[\]\\]/gu, "\\$&");
 const forbiddenFormalTarget = new RegExp(
-  `(?:${formalRegionTokens.join("|")})(?=(?:${serviceKeywords.join("|")}))`,
+  `(?:${formalRegionTokens.map(escapeRegExp).join("|")})(?=(?:${serviceKeywords.join("|")}))`,
   "u",
 );
+const standaloneFormalRegionTokens = formalRegionTokens.map((token) => [
+  token,
+  new RegExp(
+    `(?:^|[\\s,·|:()])${escapeRegExp(token)}(?=$|[\\s,·|:().])`,
+    "u",
+  ),
+]);
 
 function decodeHtml(value) {
   return value
@@ -154,6 +162,14 @@ test("all approved regional routes have unique concise metadata", () => {
         forbiddenFormalTarget,
         `${entry.path}: formal suffix remains in ${field}`,
       );
+      for (const [formalRegionToken, standalonePattern] of
+        standaloneFormalRegionTokens) {
+        assert.doesNotMatch(
+          value,
+          standalonePattern,
+          `${entry.path}: official token ${formalRegionToken} remains in ${field}`,
+        );
+      }
     }
 
     assert.ok(!titles.has(metadata.title), `${entry.path}: duplicate title`);
@@ -186,6 +202,7 @@ test("representative roots and city routes use customer-search labels", () => {
       "수원출장마사지",
     ],
     ["/areas/cheonan", "천안출장마사지"],
+    ["/areas/jeju", "제주출장마사지"],
   ]);
 
   for (const [path, expectedPrimaryKeyword] of examples) {

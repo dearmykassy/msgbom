@@ -15,8 +15,10 @@
   `서울특별시`, `인천광역시`, `경기도` and `수원시` become `서울`, `인천`,
   `경기` and `수원`. Never strip `구`, `군`, `읍`, `면`, `동` or `리`
   globally. When shortened names collide, prepend similarly shortened parent
-  labels until every regional primary keyword is unique. This rule is
-  metadata-only: keep official qualified names in visible content,
+  labels until every regional primary keyword is unique. Do not retain the
+  qualified official form as a standalone locality phrase anywhere in those
+  three metadata fields, including the descriptive opening sentence. This
+  rule is metadata-only: keep official qualified names in visible content,
   breadcrumbs and schema, and never change regional URLs or canonicals for
   this optimization.
 - This is not a Todaki-family platform. In every massage service or course

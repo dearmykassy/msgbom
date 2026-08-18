@@ -306,7 +306,7 @@ function assertAvailable(node: RegionNode): void {
 function buildMetadata(
   node: RegionNode,
   options: RegionSeoCopyOptions,
-  scopeLabel: string,
+  metaRegionLabel: string,
   profileIndex: number,
   metadataKeywords: ReturnType<typeof buildRegionServiceKeywords>,
 ): RegionSeoCopy["metadata"] {
@@ -314,7 +314,7 @@ function buildMetadata(
   if (!identity) {
     return {
       title: `${metadataKeywords.출장마사지} 이용 정보 | 마사지봄`,
-      description: `${scopeLabel} 기준 ${metadataKeywords.출장마사지} 정보를 찾을 때 지역 범위, 코스·가격, 이용 전 확인 항목을 순서대로 살펴볼 수 있는 안내 페이지입니다.`,
+      description: `${metaRegionLabel} 기준 ${metadataKeywords.출장마사지} 정보를 찾을 때 지역 범위, 코스·가격, 이용 전 확인 항목을 순서대로 살펴볼 수 있는 안내 페이지입니다.`,
       variationPlan: "fallback",
     };
   }
@@ -350,7 +350,7 @@ function buildMetadata(
     return {
       title: `${primaryKeyword} ${secondaryKeyword} | ${identity.commercialName} · 마사지봄`,
       description:
-        `${scopeLabel} 마사지봄 ${identity.commercialName}의 ${primaryKeyword}, ${secondaryKeyword} 안내입니다.${coverageAnchor} ` +
+        `${metaRegionLabel} 마사지봄 ${identity.commercialName}의 ${primaryKeyword}, ${secondaryKeyword} 안내입니다.${coverageAnchor} ` +
         `${EXPANDED_META_ADDRESS_VARIANTS[addressIndex]} ${EXPANDED_META_COURSE_VARIANTS[courseIndex]} ` +
         `${EXPANDED_META_CALL_VARIANTS[callIndex]} ${EXPANDED_META_PAYMENT_VARIANTS[paymentIndex]}`,
       variationPlan: `expanded:${addressIndex}:${courseIndex}:${callIndex}:${paymentIndex}`,
@@ -366,7 +366,7 @@ function buildMetadata(
       profileIndex /
         (META_OPENING_VARIANTS.length * META_CORE_VARIANTS.length),
     ) % META_CLOSING_VARIANTS.length;
-  const opening = META_OPENING_VARIANTS[openingIndex](identity, scopeLabel);
+  const opening = META_OPENING_VARIANTS[openingIndex](identity, metaRegionLabel);
   const primaryKeyword = metadataKeywords["출장마사지"];
   const secondaryKeyword = metadataKeywords[REGION_SERVICE_KEYWORD_SUFFIXES[1]];
   const core = META_CORE_VARIANTS[coreIndex](
@@ -406,9 +406,8 @@ export function buildRegionSeoCopy(
   const scopeLabel = hierarchy.join(" ");
   const profileIndex = profileIndexFor(node);
   const keywords = buildRegionServiceKeywords(regionName);
-  const metadataKeywords = buildRegionServiceKeywords(
-    getMetaRegionLabel(node.path),
-  );
+  const metaRegionLabel = getMetaRegionLabel(node.path);
+  const metadataKeywords = buildRegionServiceKeywords(metaRegionLabel);
   const visible = Object.values(keywords);
   const heroLead = HERO_LEAD_VARIANTS[profileIndex % HERO_LEAD_VARIANTS.length](
     scopeLabel,
@@ -446,7 +445,7 @@ export function buildRegionSeoCopy(
     metadata: buildMetadata(
       node,
       options,
-      scopeLabel,
+      metaRegionLabel,
       profileIndex,
       metadataKeywords,
     ),
